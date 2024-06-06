@@ -4,6 +4,7 @@
 //Version 0.11
 //Author: Ross Barros-Smith
 //License: LGPL v3
+//Site: https://github.com/rossified/supercubes
 
 
 //== Version history == 
