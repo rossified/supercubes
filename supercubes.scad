@@ -13,16 +13,6 @@
 //0.11 - March 20, 2024: Added 2d and 3D ovives.
 //0.1 - January 1, 2024: Rewrite of Cubetools. Library currently includes modules for cubes, chamfered cubes, radiused cubes, 2d squres, 2d ellipses. Chamfer and radius variations will be merged into their core modules in an upcoming version. Keeping pieces likely to change separate for now.
 
-//Rotations for working planes
-xy=[0,0,0];
-yx=xy;
-
-xz=[90,0,0];
-zx=xz;
-
-yz=[0,90,0];
-zy=yz;
-
 
 //Supercubes modules
 module supercube(size=[10,10,10],center=[0,0,0],r=0,chamfer=0){
