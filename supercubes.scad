@@ -1,73 +1,139 @@
 //Supercubes
 //Cubes with alignable origins and other new geometry.
 
-//Version 0.11
+//Version 0.13
 //Author: Ross Barros-Smith
 //License: LGPL v3
-//Site: https://github.com/rossified/supercubes
 
 
-//== Version history == 
+//== Version history ==
+//0.13 - June 19, 2024: Combined supercube variants into one module.
+//0.12- June 9, 2024: Added supercube_fr() module.
 // 0.11 - June 1, 2024: Moved project to GitHub. No change in version number.
-// 0.11 - March 20, 2024: Added 2d and 3D ovives.
-// 0.1 - January 1, 2024: Rewrite of Cubetools. Library currently includes modules for cubes, chamfered cubes, radiused cubes, 2d squres, 2d ellipses. Chamfer and radius variations will be merged into their core modules in an upcoming version. Keeping pieces likely to change separate for now.
+//0.11 - March 20, 2024: Added 2d and 3D ovives.
+//0.1 - January 1, 2024: Rewrite of Cubetools. Library currently includes modules for cubes, chamfered cubes, radiused cubes, 2d squres, 2d ellipses. Chamfer and radius variations will be merged into their core modules in an upcoming version. Keeping pieces likely to change separate for now.
+
+//Rotations for working planes
+xy=[0,0,0];
+yx=xy;
+
+xz=[90,0,0];
+zx=xz;
+
+yz=[0,90,0];
+zy=yz;
 
 
 //Supercubes modules
-module supercube(size=[10,10,10],center=[0,0,0]){
-	translate([size[0]*-0.5*center[0],size[1]*-0.5*center[1],size[2]*-0.5*center[2]]) cube(size);
-	}
-	
-	
-module supercube_chamfer(size=[10,10,10],center=[0,0,0],chamfer=1){
-	translate([size[0]*-0.5*center[0],size[1]*-0.5*center[1],size[2]*-0.5*center[2]])
-	hull(){
-		translate([chamfer,chamfer,0])
-		cube([size[0]-chamfer*2,size[1]-chamfer*2,size[2]]);
-		
-		translate([chamfer,0,chamfer])
-		cube([size[0]-chamfer*2,size[1],size[2]-chamfer*2]);
-		
-		translate([0,chamfer,chamfer])
-		cube([size[0],size[1]-chamfer*2,size[2]-chamfer*2]);
-	}
-}
+module supercube(size=[10,10,10],center=[0,0,0],r=0,chamfer=0){
 
-module supercube_r(size=[10,10,10],center=[0,0,0],r=1){
+	//assert(false, "Both a chamfer and a radius value have been assigned.")
+
+	//Radiused chamfered cube
+	*if (r != 0 || chamfer != 0) {
+		
+		//size=([size=[0]-r*2,size=[1]-r*2,size=[2]-r*2,]);
+		
+		//translate([-r,-r,-r])
+		
+			translate([size[0]*-0.5*center[0],size[1]*-0.5*center[1],size[2]*-0.5*center[2]])
+			minkowski(){
+			hull(){
+				translate([chamfer,chamfer,0])
+				cube([size[0]-chamfer*2,size[1]-chamfer*2,size[2]]);
+				
+				translate([chamfer,0,chamfer])
+				cube([size[0]-chamfer*2,size[1],size[2]-chamfer*2]);
+				
+				translate([0,chamfer,chamfer])
+				cube([size[0],size[1]-chamfer*2,size[2]-chamfer*2]);
+			}
+		sphere(r=r);
+		}
+	}
+	
+	//Radiused Cube
+	if (r != 0) {
+		translate([size[0]*-0.5*center[0],size[1]*-0.5*center[1],size[2]*-0.5*center[2]])
+		hull(){
+			translate([r,r,0])
+			cube([size[0]-r*2,size[1]-r*2,size[2]]);
+			
+			translate([r,0,r])
+			cube([size[0]-r*2,size[1],size[2]-r*2]);
+			
+			translate([0,r,r])
+			cube([size[0],size[1]-r*2,size[2]-r*2]);
+			
+			//Bottom left front corner
+			translate([r,r,r]) sphere(r=r);
+			
+			//Bottom right front corner
+			translate([size[0]-r,r,r]) sphere(r=r);
+			
+			//Bottom left back corner
+			translate([r,size[1]-r,r]) sphere(r=r);
+			
+			//Bottom right back corner
+			translate([size[0]-r,size[1]-r,r]) sphere(r=r);
+			
+			//Top left front corner
+			translate([r,r,size[2]-r]) sphere(r=r);
+			
+			//Top right front corner
+			translate([size[0]-r,r,size[2]-r]) sphere(r=r);
+			
+			//Top left back corner
+			translate([r,size[1]-r,size[2]-r]) sphere(r=r);
+			
+			//Top right back corner
+			translate([size[0]-r,size[1]-r,size[2]-r]) sphere(r=r);
+			}
+	}
+
+	//Chamfered Cube
+	else if (chamfer != 0 ) {
+		translate([size[0]*-0.5*center[0],size[1]*-0.5*center[1],size[2]*-0.5*center[2]])
+		hull(){
+			translate([chamfer,chamfer,0])
+			cube([size[0]-chamfer*2,size[1]-chamfer*2,size[2]]);
+			
+			translate([chamfer,0,chamfer])
+			cube([size[0]-chamfer*2,size[1],size[2]-chamfer*2]);
+			
+			translate([0,chamfer,chamfer])
+			cube([size[0],size[1]-chamfer*2,size[2]-chamfer*2]);
+		}
+	}
+
+
+	// Regular Cube
+	else translate([size[0]*-0.5*center[0],size[1]*-0.5*center[1],size[2]*-0.5*center[2]]) cube(size);
+}
+	
+	
+
+
+module supercube_fr(size=[10,10,10],center=[0,0,0],r=1){
 	translate([size[0]*-0.5*center[0],size[1]*-0.5*center[1],size[2]*-0.5*center[2]])
 	hull(){
-		translate([r,r,0])
-		cube([size[0]-r*2,size[1]-r*2,size[2]]);
+		//translate([r,r,0]) cube([size[0]-r*2,size[1]-r*2,size[2]]);
 		
-		translate([r,0,r])
-		cube([size[0]-r*2,size[1],size[2]-r*2]);
+		translate([r,0,0]) cube([size[0]-r*2,size[1],size[2]]);
 		
-		translate([0,r,r])
-		cube([size[0],size[1]-r*2,size[2]-r*2]);
+		translate([0,r,0]) cube([size[0],size[1]-r*2,size[2]]);
 		
 		//Bottom left front corner
-		translate([r,r,r]) sphere(r=r);
+		translate([r,r,0]) cylinder(r=r,h=size[2]);
 		
 		//Bottom right front corner
-		translate([size[0]-r,r,r]) sphere(r=r);
+		translate([size[0]-r,r,0]) cylinder(r=r,h=size[2]);
 		
 		//Bottom left back corner
-		translate([r,size[1]-r,r]) sphere(r=r);
+		translate([r,size[1]-r,0]) cylinder(r=r,h=size[2]);
 		
 		//Bottom right back corner
-		translate([size[0]-r,size[1]-r,r]) sphere(r=r);
-		
-		//Top left front corner
-		translate([r,r,size[2]-r]) sphere(r=r);
-		
-		//Top right front corner
-		translate([size[0]-r,r,size[2]-r]) sphere(r=r);
-		
-		//Top left back corner
-		translate([r,size[1]-r,size[2]-r]) sphere(r=r);
-		
-		//Top right back corner
-		translate([size[0]-r,size[1]-r,size[2]-r]) sphere(r=r);
+		translate([size[0]-r,size[1]-r,0]) cylinder(r=r,h=size[2]);
 		}
 }
 	
@@ -130,4 +196,3 @@ module ogive_3d(r=20,shank=10){
 		square([shank,r]);
 	}
 }
-
