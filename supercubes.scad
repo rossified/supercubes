@@ -7,7 +7,7 @@
 
 
 //== Version history ==
-//0.131 - June 22, 2024: Repaired error in supersquare() module.
+//0.131 - June 22, 2024: Combined supersquare variants into one module.
 //0.13 - June 19, 2024: Combined supercube variants into one module.
 //0.12- June 9, 2024: Added supercube_fr() module.
 // 0.11 - June 1, 2024: Moved project to GitHub. No change in version number.
@@ -127,39 +127,43 @@ module supercube_fr(size=[10,10,10],center=[0,0,0],r=1){
 		translate([size[0]-r,size[1]-r,0]) cylinder(r=r,h=size[2]);
 		}
 }
-	
-module supersquare(size=[10,10],center=[0,0]){
-	translate([size[0]*-0.5*center[0],size[1]*-0.5*center[1]])
-		square([size[0],size[1]]);
-}
 
-module supersquare_r(size=[10,10],center=[0,0],r=2.5){
-	translate([size[0]*-0.5*center[0],size[1]*-0.5*center[1]])
-	hull(){
 
-		translate([r,r,0]) square([size[0]-r*2,[size[1]-r*2]]);
-	
-		//Bottom left front corner
-		translate([r,r,r]) circle(r=r);
-		
-		//Bottom right front corner
-		translate([size[0]-r,r,r]) circle(r=r);
-		
-		//Bottom left back corner
-		translate([r,size[1]-r,r]) circle(r=r);
-		
-		//Bottom right back corner
-		translate([size[0]-r,size[1]-r,r]) circle(r=r);
-	}		
-}
 
-	
-module supersquare_chamfer(size=[10,10],center=[0,0],chamfer=1){
-	translate([size[0]*-0.5*center[0],size[1]*-0.5*center[1]])
-	hull(){
-		translate([chamfer,0,0]) square([size[0]-chamfer*2,size[1]]);
-		translate([0,chamfer,0]) square([size[0],size[1]-chamfer*2]);
+module supersquare(size=[10,10],center=[0,0],r=0,chamfer=0){
+	//Radiused square
+	if (r != 0) {
+		translate([size[0]*-0.5*center[0],size[1]*-0.5*center[1]])
+		hull(){
+			translate([r,r,0]) square([size[0]-r*2,size[1]-r*2]);
+		
+			//Bottom left front corner
+			translate([r,r,r]) circle(r=r);
+			
+			//Bottom right front corner
+			translate([size[0]-r,r,r]) circle(r=r);
+			
+			//Bottom left back corner
+			translate([r,size[1]-r,r]) circle(r=r);
+			
+			//Bottom right back corner
+			translate([size[0]-r,size[1]-r,r]) circle(r=r);
+		}		
+	}	
+
+	//Chamfered Square
+	else if (chamfer != 0 ) {
+		translate([size[0]*-0.5*center[0],size[1]*-0.5*center[1]])
+		hull(){
+			translate([chamfer,0,0]) square([size[0]-chamfer*2,size[1]]);
+			translate([0,chamfer,0]) square([size[0],size[1]-chamfer*2]);
 		}
+	}
+
+	//Regular square
+	else
+		translate([size[0]*-0.5*center[0],size[1]*-0.5*center[1]])
+				square([size[0],size[1]]);
 }
 
 
