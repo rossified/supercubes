@@ -7,6 +7,7 @@
 
 
 //== Version history ==
+//0.131 - June 22, 2024: Repaired error in supersquare() module.
 //0.13 - June 19, 2024: Combined supercube variants into one module.
 //0.12- June 9, 2024: Added supercube_fr() module.
 // 0.11 - June 1, 2024: Moved project to GitHub. No change in version number.
@@ -129,7 +130,7 @@ module supercube_fr(size=[10,10,10],center=[0,0,0],r=1){
 	
 module supersquare(size=[10,10],center=[0,0]){
 	translate([size[0]*-0.5*center[0],size[1]*-0.5*center[1]])
-		cube([size[0]-chamfer*2,size[1]-chamfer*2,size[2]]);
+		square([size[0],size[1]]);
 }
 
 module supersquare_r(size=[10,10],center=[0,0],r=2.5){
