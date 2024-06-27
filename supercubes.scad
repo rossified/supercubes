@@ -1,7 +1,7 @@
 //Supercubes
 //Cubes with alignable origins and other new geometry.
 
-//Version 0.13
+//Version 0.14
 //Author: Ross Barros-Smith
 //License: LGPL v3
 
