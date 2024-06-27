@@ -7,6 +7,7 @@
 
 
 //== Version history ==
+//0.14 - June 27, 2024: Added spherically blunted ogives. Will merge modules soon.
 //0.131 - June 22, 2024: Combined supersquare variants into one module.
 //0.13 - June 19, 2024: Combined supercube variants into one module.
 //0.12- June 9, 2024: Added supercube_fr() module.
@@ -176,7 +177,10 @@ module ellipse_cylinder(size=[10,5,10]){
 }
 	
 	
+//2D Tangent Ogive
 module ogive(r=20,shank=10){
+//cap=sqrt(r^2-(r-(shank/2))^2); //y^2=r^2-x^2 ... x=-r-(shank/2)
+
 	intersection(){
 		translate([r-shank/2,0,0]) circle(r=r);
 		translate([-r+shank/2,0,0]) circle(r=r);
@@ -184,10 +188,52 @@ module ogive(r=20,shank=10){
 	}
 }
 
+//2D Tangent Circularly Blunted Ogive
+module ogive_br(r=20,shank=10,br=3){
+	peak_h=sqrt(r^2-(r-(shank/2))^2);
+	cap_h=sqrt( (r-br)^2-(r-(shank/2))^2);
+
+	hull(){
+		translate([0,cap_h,0]) circle(r=br);
+
+		difference(){
+			intersection(){
+				translate([r-shank/2,0,0]) circle(r=r);
+				translate([-r+shank/2,0,0]) circle(r=r);
+				translate([-shank/2,0,0]) square([shank,r]);
+			}
+		translate([-shank/2,cap_h,0]) square([shank,r]);
+		}
+	}
+}
+
+//3D Tangent Ogive
 module ogive_3d(r=20,shank=10){
 	rotate_extrude(angle=360,convexity=2)
 	intersection(){
 		translate([-r+shank/2,0,0]) circle(r=r);
 		square([shank,r]);
+	}
+}
+
+//3D Tangent Spherically Blunted Ogive
+module ogive_br_3d(r=20,shank=10,br=3){
+	peak_h=sqrt(r^2-(r-(shank/2))^2);
+	cap_h=sqrt( (r-br)^2-(r-(shank/2))^2);
+
+	rotate_extrude(angle=360)
+	hull(){
+		intersection(){
+		translate([0,cap_h,0]) circle(r=br);
+		translate([0,0,0]) square([shank,r]);
+		}
+
+		difference(){
+			intersection(){
+				translate([-r+shank/2,0,0]) circle(r=r);
+				translate([0,0,0]) square([shank,r]);
+			}
+		translate([-shank/2,cap_h,0]) square([shank,r]);
+		}
 	}
 }
