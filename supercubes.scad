@@ -19,8 +19,6 @@
 //Supercubes modules
 module supercube(size=[10,10,10],center=[0,0,0],r=0,chamfer=0){
 
-	//assert(false, "Both a chamfer and a radius value have been assigned.")
-
 	//Radiused chamfered cube
 	*if (r != 0 || chamfer != 0) {
 		
@@ -168,17 +166,19 @@ module supersquare(size=[10,10],center=[0,0],r=0,chamfer=0){
 }
 
 
+//2D Ellipse
 module ellipse(size=[10,5]){
 	scale([1,size[1]/size[0]]) circle(size[0]/2);
 }
-	
+
+//Elliptical Cylinder
 module ellipse_cylinder(size=[10,5,10]){
 	linear_extrude(height=size[2]) scale([1,size[1]/size[0]]) circle(size[0]/2);
 }
 	
 	
 //2D Tangent Ogive
-module ogive(r=20,shank=10){
+module ogive(r=20,shank=10,verbose=false){
 //cap=sqrt(r^2-(r-(shank/2))^2); //y^2=r^2-x^2 ... x=-r-(shank/2)
 
 	intersection(){
@@ -186,10 +186,16 @@ module ogive(r=20,shank=10){
 		translate([-r+shank/2,0,0]) circle(r=r);
 		translate([-shank/2,0,0]) square([shank,r]);
 	}
+
+//Information Output
+	if (verbose==true) {
+		echo("Ogive Y: ", sqrt(r^2-(r-(shank/2))^2));
+		echo("Ogive X: ", shank);
+	}
 }
 
 //2D Tangent Circularly Blunted Ogive
-module ogive_br(r=20,shank=10,br=3){
+module ogive_br(r=20,shank=10,br=3,verbose=false){
 	peak_h=sqrt(r^2-(r-(shank/2))^2);
 	cap_h=sqrt( (r-br)^2-(r-(shank/2))^2);
 
@@ -205,19 +211,31 @@ module ogive_br(r=20,shank=10,br=3){
 		translate([-shank/2,cap_h,0]) square([shank,r]);
 		}
 	}
+	//Information Output
+	if (verbose==true) {
+		echo("Ogive Y: ", sqrt(r^2-(r-(shank/2))^2)+br/2);
+		echo("Ogive X: ", shank);
+	}
 }
 
 //3D Tangent Ogive
-module ogive_3d(r=20,shank=10){
+module ogive_3d(r=20,shank=10,verbose=false){
 	rotate_extrude(angle=360,convexity=2)
 	intersection(){
 		translate([-r+shank/2,0,0]) circle(r=r);
 		square([shank,r]);
 	}
+
+	//Information Output
+	if (verbose==true) {
+		echo("Ogive Height: ", sqrt(r^2-(r-(shank/2))^2));
+		echo("Ogive Diameter: ", shank);
+		echo("Ogive Radius: ", shank/2);
+	}
 }
 
 //3D Tangent Spherically Blunted Ogive
-module ogive_br_3d(r=20,shank=10,br=3){
+module ogive_br_3d(r=20,shank=10,br=3,verbose=false){
 	peak_h=sqrt(r^2-(r-(shank/2))^2);
 	cap_h=sqrt( (r-br)^2-(r-(shank/2))^2);
 
@@ -235,5 +253,11 @@ module ogive_br_3d(r=20,shank=10,br=3){
 			}
 		translate([-shank/2,cap_h,0]) square([shank,r]);
 		}
+	}
+	//Information Output
+	if (verbose==true) {
+		echo("Ogive Height: ", sqrt(r^2-(r-(shank/2))^2)+br/2);
+		echo("Ogive Diameter: ", shank);
+		echo("Ogive Radius: ", shank/2);
 	}
 }
